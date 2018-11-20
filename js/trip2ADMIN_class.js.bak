@@ -1,0 +1,616 @@
+function trip2ADMIN(parent, userData, section){
+  this.appLayout = "";
+  this.parent = parent;
+  this.userData = userData;
+  this.section = section;
+  this.appName = 'Trip2.0';
+  this.appDirectory = 'trip2';
+};
+
+trip2ADMIN.prototype = {
+/**
+ * APPLICATION CODE STARTS HERE
+ */
+ create: function(){
+
+ 	console.log(this.section);
+
+    switch(this.section){
+
+      case 'All':
+        this.loadSectionALL();
+        break;
+
+      default:
+        break;
+    }
+  },
+
+
+  loadSectionALL: function(){
+// HOME PAGE
+// 1.) CREATE APP LAYOUT
+
+	this.appLayout = new dhtmlXLayoutObject({
+		parent:	this.parent,
+		pattern: "1C"
+	});
+
+/**
+ * NOTE:
+ * IT'S EASIER TO HAVE THE 'ADD NEW PERMISSION' AS A BUTTON
+ * IN A TOOLBAR. FUNCTIONALITY IS STILL THE SAME
+ */
+// 1.1) CREATE TOOLBAR FOR 'ADD NEW PERMISSION' (ADMIN ONLY)
+	var appToolbar = this.parent.attachToolbar();
+    	appToolbar.addButton(2,2,'<span style="font-style:italic;">Add new permission&nbsp;</span>','/dhtmlx/codebase/imgs/add-user.png',null);
+
+// 1.2) CREATE DHXWINDOWS OBJECT
+    var appWindow = new dhtmlXWindows();
+
+// 2.) ADD TABBAR TO LAYOUT
+
+	var myTabbar = this.appLayout.cells("a").attachTabbar({
+		align: "left",
+		mode: "top",
+		tabs: [
+	        {id: "home", text: "Home", active: true},
+	        {id: "Review", text: "Review"}
+	    ]
+
+	});
+
+
+// 3.) ADD UI ELEMENTS TO ONE OF THE TABS
+
+	var homeLayout = myTabbar.tabs("home").attachLayout({
+
+		pattern: "1C",
+
+		cells: [
+		 {id: "a", text: "Form"}
+			// {id: "b", text: "Grid", header: false},
+
+		]
+
+	});
+
+// EXTRA VARIABLES IF NEEDED
+	// var gridCell = homeLayout.cells("a");
+	var formCell = homeLayout.cells("a");
+
+// 3.1) CREATE GRID
+
+	// var homeGrid = gridCell.attachGrid();
+	// 	homeGrid.setHeader('Date, Name, Address, City, State, Zip');
+	// 	homeGrid.setColTypes('ro, ro,ed,ed,ed,ed');
+	// 	homeGrid.setInitWidths('*,*,*,*,*,*');
+		// Ask for data from sql server
+		// sharedProjectsGRID.clearAndLoad("");
+		// homeGrid.init();
+
+var homeForm, homeFormData;
+	 homeFormData = [
+
+
+{type: "block", name: "blockHeader", style:" margin-bottom:10px; background-color:#DFDCE3; border-bottom:solid; width:100%;", blockOffset: 0, list:[
+
+//LITERATURE REQUEST SHEET
+		{type: "label", name: "headerTitle",  label: "<h1><b>Literature Request Sheet</b></h1>"}
+
+]},
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, style:"margin-left:10px;", list:[
+
+//Date
+		// {type: "calendar", name: "date", style:"width:70px;", position:"label-left", label: "<b>Date:</b>",
+		// required:true},
+
+		//{type: "newcolumn"},
+//Fname
+		{type: "input", name: "Fname", position:"label-left", label: "<b>First Name:</b>", required:true },
+
+		{type: "newcolumn"},
+//Lname
+		{type: "input", name: "Lname", style:"width:180px;", position:"label-left", label: "<b>Last Name:</b>", required:true},
+]},
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, style:"margin-left:10px;", list:[
+
+//Address 1 & 2
+		{type: "input", name: "address", style:"width:550px;", position:"label-left", label: "<b>Address:</b>",
+			required:true},
+
+		{type: "input", style:"margin-left:65px; width:550px;", name: "address2"},
+]},
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, style:"margin-left:10px;", list:[
+
+//City
+		{type: "input", name: "city", position:"label-left", label: "<b>City:</b>", required:true},
+
+		{type: "newcolumn"},
+//State
+		{type: "combo", name: "state", style:"width:230px;",  position:"label-left", label: "<b>State:</b>", required:true},
+
+		{type: "newcolumn"},
+//Zip
+		{type: "input", name: "zip", style:"width:110px;", position:"label-left", label: "<b>Zip:</b>", required:true},
+
+]},
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, style:"margin-left:10px;", list:[
+
+//Phone Number
+		{type: "input", name: "phoneNumber", position:"label-left", label: "<b>Phone Number:</b>"},
+
+		{type: "newcolumn"},
+//Email
+		{type: "input", name: "email", style:"width:310px;", position:"label-left", label: "<b>Email:</b>",
+		 validate:"ValidEmail" },
+]},
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, style:"margin-left:10px;", list:[
+
+//Notes
+		{type: "input", name: "notes", label: "<b>Notes:</b>", rows:5, style:"width:565px;"},
+
+]},
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", style:"background-color:#DFDCE3; width:100%; margin-top:10px; border-bottom:solid; ", blockOffset: 0, list:[
+
+//Sheet Grand Totals
+		{type: "label", name: "headerTitle",  label: "<h1><b>Sheet Grand Totals</b></h1>"}
+
+]},
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, list:[
+
+//Vacation Kits
+{type: "checkbox", position:"label-right", label: "<b>Vacation Kits:</b>", value:"vk", checked: true, name:"packages" },
+
+      	{type: "newcolumn"},
+//Map
+{type: "checkbox", position:"label-right", label: "<b>Map</b>", value:"Map",  checked: false, name:"packages"},
+
+        {type: "newcolumn"},
+//COE
+{type: "checkbox", position:"label-right", label: "<b>COE</b>", value:"coe", checked: false, name:"packages"},
+
+		{type: "newcolumn"},
+//SP
+{type: "checkbox", position:"label-right", label: "<b>SP</b>", value:"sp",  checked: false, name:"packages"},
+
+		{type: "newcolumn"},
+//TG
+{type: "checkbox", position:"label-right", label: "<b>TG</b>", value:"tg", checked: false, name:"packages"},
+
+		{type: "newcolumn"},
+//ADV
+{type: "checkbox", position:"label-right", label: "<b>ADV</b>", value:"adv", checked: false, name:"packages"},
+
+		{type: "newcolumn"},
+//ARV
+{type: "checkbox", position:"label-right", label: "<b>ARV</b>", value:"arv", checked: false, name:"packages"},
+
+		{type: "newcolumn"},
+//AS
+{type: "checkbox", position:"label-right", label: "<b>AS</b>", value:"as", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//ASW
+{type: "checkbox", position:"label-right", label: "<b>ASW</b>", value:"asw", checked: false, name:"packages"},
+
+]},
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, list:[
+
+//DB
+{type: "checkbox", position:"label-right", label: "<b>DB</b>", value:"db", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//HS
+{type: "checkbox", position:"label-right", label: "<b>DL/HS</b>", value:"dlhs", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//GF/LRR
+{type: "checkbox", position:"label-right", label: "<b>GF/LRR</b>", value:"gflrr", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//HOA/LR
+{type: "checkbox", position:"label-right", label: "<b>HOA/LR</b>", value:"hoalr", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//LOL
+{type: "checkbox", position:"label-right", label: "<b>LOL</b>", value:"lol", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//NWA
+{type: "checkbox", position:"label-right", label: "<b>NWA</b>", value:"nwa", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//OG
+{type: "checkbox", position:"label-right", label: "<b>OG</b>", value:"og", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//OMR
+{type: "checkbox", position:"label-right", label: "<b>OMR</b>", value:"omr", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//WAMF
+{type: "checkbox", position:"label-right", label: "<b>WAMF</b>", value:"wamf", checked: false, name:"packages"},
+
+]},
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, list:[
+
+//RR
+{type: "checkbox", position:"label-right", label: "<b>RR</b>", value:"rr", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//WW
+{type: "checkbox", position:"label-right", label: "<b>WW</b>", value:"ww", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//GOLF
+{type: "checkbox", position:"label-right", label: "<b>GOLF</b>", value:"golf", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//LETS RIDE
+{type: "checkbox", position:"label-right", label: "<b>Let's Ride</b>", value:"letsRide", checked: false,name:"packages" },
+
+	{type: "newcolumn"},
+//LETS RIDE CW
+{type: "checkbox", position:"label-right", label: "<b>Let's Ride Civil War</b>", value:"letsRideCW", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//MG
+{type: "checkbox", position:"label-right", label: "<b>MG</b>", value:"mg", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//BIKE
+{type: "checkbox", position:"label-right", label: "<b>BIKE</b>", value:"bike", checked: false,name:"packages" },
+
+	{type: "newcolumn"},
+//MB
+{type: "checkbox", position:"label-right", label: "<b>MB</b>", value:"mb", checked: false, name:"packages"},
+
+]},
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, list:[
+
+//RC
+{type: "checkbox", position:"label-right", label: "<b>RC</b>", value:"rc", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//DW
+{type: "checkbox", position:"label-right", label: "<b>DW</b>", value:"dw", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//HT
+{type: "checkbox", position:"label-right", label: "<b>HT</b>", value:"ht", checked: false, name:"packages"},
+
+	{type: "newcolumn"},
+//NA
+{type: "checkbox", position:"label-right", label: "<b>NA</b>", value:"na", checked: false,name:"packages"},
+
+	{type: "newcolumn"},
+//MISC
+{type: "checkbox", position:"label-right", label: "<b>Misc</b>", value:"misc", checked: false, name:"packages"},
+
+]},
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+{type: "block", blockOffset: 0, list:[
+
+//SUBMIT BTN
+{type:"button", name:"submitBtn",value:"Submit"}
+
+]}
+
+	];
+
+
+var attachHomeFormData = formCell.attachForm(homeFormData);
+
+
+// REPORT RECORDS
+var reviewLayout = myTabbar.tabs("Review").attachLayout({
+
+		pattern: "1C",
+
+		cells: [
+
+	 {id: "a", text: "Grid", header: false},
+
+		]
+
+	});
+
+// EXTRA VARIABLES IF NEEDED
+	var gridCell = reviewLayout.cells("a");
+
+// 3.0.1) CREATE TOOLBAR
+
+	var reviewToolbar = gridCell.attachToolbar();
+			reviewToolbar.addButton(1,1,'Re-Run&nbsp;','/dhtmlx/codebase/imgs/fast-forward.png',null);
+			reviewToolbar.addButton(2,2,'Settings&nbsp;','/dhtmlx/codebase/imgs/settings.gif',null);
+
+	var suggestionToolbarPop = new dhtmlXPopup({
+		toolbar: reviewToolbar,
+		id: ["2"]
+	});
+
+// 3.1) CREATE GRID
+
+	var reviewGrid = gridCell.attachGrid();
+		reviewGrid.setHeader('ID, Status, Date, First Name, Last Name, Address, Address 2, City, State, Zip, Country, Phone, Email, Brochures, Review');
+		reviewGrid.setColTypes('ro,ro,ro,ro,ro,ed,ed,ed,ro,ed,ed,ro,ro,ro,ro');
+		reviewGrid.setInitWidths('*,*,*,*,*,*,*,*,*,*,*,*,*,*,*');
+		reviewGrid.setColSorting("int,str,date,str,str,str,str,str,str,str,str,str,str,str,str");
+
+
+// Ask for data from sql server
+		reviewGrid.load("/_apps/trip2/connectors/reviewGrid_connector.php", function(){
+			reviewGrid.forEachRow(function(id){
+				
+				var reviewItems= reviewGrid.cells(id,14).getValue();
+				reviewGrid.setCellExcellType(id,1,'coro');
+				var statusSelect = reviewGrid.getCombo(1);
+		
+      	statusSelect.put("D"," D");
+      	statusSelect.put("P"," P");
+      	statusSelect.put("R"," R");
+      	
+
+				
+					var stateSelect = reviewGrid.cells(id,14).getValue();
+							reviewGrid.setCellExcellType(id,8,'co');
+					var stateCombo = reviewGrid.getCombo(8);
+					
+
+							
+				
+		
+      	window.dhx4.ajax.get("/_apps/trip2/connectors/statecombo_connector.php?isGridCombo=true", function(r){
+          var states = JSON.parse(r.xmlDoc.responseText);
+          for(var i = 0; i < states.length; i++) {
+          	stateCombo.put(states[i+1],states[i]);
+          	}
+        });
+        
+        		
+        
+				
+					
+				var reviewArray = reviewItems.split(",");
+				for(var i = 0; i < reviewArray.length; i++){
+				
+					if (reviewArray[i] != ''){
+						var index = parseInt(reviewArray[i]);
+						index = index + 2;
+						//console.log("Original: "+reviewArray[i]+" -- Formatted: "+index);
+						reviewGrid.cells(id, index).setBgColor('#ff6666');
+					}
+					
+					/*var value= reviewGrid.cells(id,reviewArray[i]).getValue();
+					reviewGrid.cells(id,reviewArray[i]).setValue('<b>'+value+'</b>');*/
+				}		
+			});
+});
+		reviewGrid.init();
+		reviewGrid.setColumnsVisibility("true,false,false,false,false,false,false,false,false,false,false,false,false,false,true");
+		
+
+// STATE COMBO BOX
+var myCombo = attachHomeFormData.getCombo('state');
+myCombo.load("/_apps/trip2/connectors/statecombo_connector.php");
+myCombo.allowFreeText(false);
+myCombo.enableAutocomplete();
+
+
+	
+	
+
+
+// EVENT CALLS
+	this.toolbar_onClick(appToolbar, appWindow, this.appDirectory);
+	this.form_onButtonClick(attachHomeFormData);
+	this.reviewToolbar_onClick(reviewToolbar, reviewGrid);
+	this.reviewGrid_onCellChanged(reviewGrid);
+
+
+  },
+
+ /*************
+ * EVENTS
+ ************/
+
+ /**
+ * toolbar -- onClick function
+ * @param  {[toolbar]} 				tBar [toolbar with 'Add new permission' (ADMIN)]
+ * @param  {[dhxWindows]} 			win  [dhxwindow object]
+ * @param  {[app directory name]} 	appD [string name of app directory]
+ * @return {[EVENT]}      				 [onClick]
+ */
+ 	toolbar_onClick: function(tBar, win, appD){
+	    var appName = this.appName;
+	    tBar.attachEvent('onClick', function(id){
+
+	      if (win.window('uma') == null) {
+	        // window was not created earlier
+	        // create a new one
+	        win.createWindow('uma', 100, 20, screen.width-300, screen.height-400);
+	        win.window('uma').setText(appName+' - User Manager');
+	        // init app
+	        console.log(appName);
+	        initApp('uma', win.window('uma'), appD, appName, 4);
+	      }else{
+	        // window already created (app probably attached),
+	        // you just need to change focus
+	        win.window('uma').bringToTop();
+	      }
+	    });
+	},
+
+/**
+ * form -- onButtonClick function
+ * @param  {[form]} 				form [submission of Trip form]
+ * @return {[EVENT]}      				 [onButtonClick]
+ */
+ 
+ 
+	form_onButtonClick: function(form){
+
+		form.attachEvent("onButtonClick", function(name){
+			// var packagesList = document.getElementsByName('packages[]');
+			// var packages = [];
+			// for(var i = 0; i < packagesList.length; i++){
+			// 	packages.push(packagesList[i].value);
+			// }
+			// console.log(packages.toString());
+			//var packages = form.getCheckedValue('packages[]');
+			//console.log(packages);
+			var p = [];
+			form.forEachItem(function(id){
+				if(form.getItemType(id)=='checkbox'){
+					if(form.isItemChecked(id)){
+						if(p.indexOf(form.getItemValue(id))){
+							p.push(form.getItemValue(id));
+						}
+					}
+				}
+			});
+			 console.log(p);
+			form.send("/_apps/trip2/ext/submitForm.php?packageList="+p, "get", function(r){
+
+// ALERT USER ON FORM SUBMISSION
+				console.log(r.xmlDoc.response);
+
+			});
+
+		});
+	},
+	
+	reviewToolbar_onClick: function(toolbar,grid){
+		var processArray = [];
+		toolbar.attachEvent("onClick", function(id){
+			switch(id){
+				case '1':
+				grid.forEachRow(function(id){
+					
+					var isProcess = (grid.cells(id, 1).getValue() == 'P' ? true : false);
+					if (isProcess){
+						
+						var reviewID = grid.cells(id, 0).getValue();
+						var address1 = grid.cells(id, 5).getValue();
+						var address2 = grid.cells(id, 6).getValue();
+						var city = grid.cells(id, 7).getValue();
+						var state = grid.cells(id, 8).getValue();
+						var zipcode = grid.cells(id, 9).getValue();
+						var records = [reviewID,address1,address2,city,state,zipcode];
+						processArray.push(records);
+					}
+					
+				});
+				
+				break;
+				
+				default:
+						
+				break;
+				
+				}
+				
+				var updates= processArray.toString();
+				window.dhx4.ajax.get("/_apps/trip2/ext/reRun.php?updates="+ updates, function(r){
+              console.log(r.xmlDoc.responseText);
+              grid.clearAndLoad("/_apps/trip2/connectors/reviewGrid_connector.php", function(){
+              	grid.forEachRow(function(id){
+              		
+				
+												var reviewItems= grid.cells(id,14).getValue();
+												grid.setCellExcellType(id,1,'coro');
+												var statusSelect = grid.getCombo(1);
+										
+								      	statusSelect.put("D"," D");
+								      	statusSelect.put("P"," P");
+								      	statusSelect.put("R"," R");
+
+												
+													var stateSelect = grid.cells(id,14).getValue();
+															grid.setCellExcellType(id,8,'co');
+													var stateCombo = grid.getCombo(8);
+													
+						
+															
+												
+										
+								      	window.dhx4.ajax.get("/_apps/trip2/connectors/statecombo_connector.php?isGridCombo=true", function(r){
+								          var states = JSON.parse(r.xmlDoc.responseText);
+								          for(var i = 0; i < states.length; i++) {
+								          	stateCombo.put(states[i+1],states[i]);
+								          	}
+								        });
+
+													
+												var reviewArray = reviewItems.split(",");
+												for(var i = 0; i < reviewArray.length; i++){
+												
+													if (reviewArray[i] != ''){
+														var index = parseInt(reviewArray[i]);
+														index = index + 2;
+														grid.cells(id, index).setBgColor('#ff6666');
+													}
+
+												}		
+											});
+              	});
+            });
+			
+		});
+		
+		
+		},
+	
+	
+	/**
+ * reviewGrid -- onCellChanged function
+ * @param  {[grid]} 				dhx grid [grid obj]
+ * @return {[EVENT]}      				 	 [onCellChanged]
+ */
+	reviewGrid_onCellChanged: function(grid){
+		grid.attachEvent("onCellChanged", function(rId,cInd,nValue){
+			/*if (nValue == 'D' ){
+					grid.cells(rId, 1).setValue('<b style="color:red;">D</span>');
+				}
+			if (nValue == 'P' ){
+				grid.cells(rId, 1).setValue('<b style="color:green;">P</span>')}*/
+		});
+	}
+
+
+};

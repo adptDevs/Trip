@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<rows>
+	<row id="1">
+		<cell type="sub_row_grid">/_apps/trip2/ext/getTimeSpanMediaTotals.php?isOnline=true</cell>
+		<cell>Online Meda</cell>
+	</row>
+	<row id="2">
+		<cell type="sub_row_grid">/_apps/trip2/ext/getTimeSpanMediaTotals.php?isTraditional=true</cell>
+		<cell>Traditional Media</cell>
+	</row>
+</rows>

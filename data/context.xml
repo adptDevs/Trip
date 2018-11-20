@@ -1,0 +1,6 @@
+<?xml version='1.0' ?>
+<menu id="0">
+		<item text="Add to Blacklist" img="blacklist.png"  id="blacklist"/>
+
+</menu>
+

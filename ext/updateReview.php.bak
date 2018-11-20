@@ -1,0 +1,45 @@
+<?php
+/**
+  * REQUIRED ITEMS -- copy/paste
+*/
+  define('IN_ADPT', true);
+
+  require('/dhtmlx/connector/db_config.php');
+  require("/dhtmlx/connector/db_sqlsrv.php");
+  
+  // DB CONNECTION
+  /* Name of DB */
+  $sql_db = "Trip_2.0";
+  /* REQUIRED FOR DB CONNECTION -- copy/paste */
+  $sql_conn_info = array('Database'=>$sql_db, 'UID'=>$sql_user, 'PWD'=>$sql_pass);
+  $conn = sqlsrv_connect($sql_server,$sql_conn_info);
+  
+  
+	function update_row(){
+		$sql = 	"UPDATE staging SET status='".$_GET["c1"]."'
+				WHERE id=".$_GET["c0"];
+		$res = sqlsrv_query($conn, $sql);
+		
+		return "update";	
+	}
+
+
+
+	//include XML Header (as response will be in xml format)
+	header("Content-type: text/xml");
+	//encoding may differ in your case
+	echo('<?xml version="1.0" encoding="iso-8859-1"?>'); 
+
+
+	$mode = $_GET["!nativeeditor_status"]; //get request mode
+	$rowId = $_GET["gr_id"]; //id or row which was updated 
+	
+	$action = update_row();
+
+
+
+	//output update results
+	echo "<data>";
+	echo "<action type='".$action."' sid='".$rowId."' tid='".$rowId."'/>";
+	echo "</data>";
+ ?> 
